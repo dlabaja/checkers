@@ -1,25 +1,20 @@
 ﻿namespace Checkers;
 
-public struct Position
+public record struct Position(int y, int x)
 {
-    public int x;
-    public int y;
-
-    public Position(int y, int x)
-    {
-        this.y = y;
-        this.x = x;
-    } 
+    public readonly int x = x;
+    public readonly int y = y;
 }
 
 public class Board
 {
     public const byte BoardSize = 8;
-    private readonly Dictionary<Position, Piece> pieces = new();
+    private readonly Dictionary<Position, Piece> pieces = new Dictionary<Position, Piece>();
     
     public Board()
     {
         CreateBoard();
+        this.pieces[new Position(0, 1)].Evolve();
     }
 
     private void CreateRow(PieceColor color, int offset, int rowIndex)
