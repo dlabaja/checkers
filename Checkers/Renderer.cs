@@ -2,6 +2,13 @@
 
 namespace Checkers;
 
+public static class Character
+{
+    public const string Queen = "♛";
+    public const string Pawn = "⬤";
+    public const string HairSpace = "\u2028";
+}
+
 public enum Color
 {
     Black = 0,
@@ -14,12 +21,12 @@ public class Renderer
 {
     private string Fg(Color color)
     {
-        return $"\x1b[38;5;{color}m";
+        return $"\e[38;5;{(int)color}m";
     }
     
     private string Bg(Color color)
     {
-        return $"\x1b[48;5;{color}m";
+        return $"\e[48;5;{(int)color}m";
     }
 
     private string ColorReset()
@@ -42,13 +49,10 @@ public class Renderer
         switch (piece.Type)
         {
             case PieceType.Pawn:
-                buffer.Append('⬤');
+                buffer.Append($"{Character.HairSpace}{Character.Pawn}{Character.HairSpace}");
                 break;
             case PieceType.Queen:
-                buffer.Append("🜲");
-                break;
-            default:
-                buffer.Append(' ');
+                buffer.Append($"{Character.HairSpace}{Character.Queen}{Character.HairSpace}");
                 break;
         }
     }
@@ -59,6 +63,10 @@ public class Renderer
         if (piece != null)
         {
             DisplayPiece(piece, buffer);
+        }
+        else
+        {
+            buffer.Append("   ");
         }
         
         buffer.Append(ColorReset());
