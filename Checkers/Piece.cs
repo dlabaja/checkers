@@ -33,4 +33,8 @@ public class Piece
 
         return false;
     }
+    
+    public PieceType Type => type;
+
+    public PieceColor Color => color;
 }
