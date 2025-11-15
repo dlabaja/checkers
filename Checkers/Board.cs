@@ -60,4 +60,14 @@ public class Board
 
         return board;
     }
+    
+    public Dictionary<Position, Piece> WhitePieces
+    {
+        get => this.pieces.Where(x => x.Value.Color == PieceColor.White).ToDictionary();
+    }
+    
+    public Dictionary<Position, Piece> BlackPieces
+    {
+        get => this.pieces.Where(x => x.Value.Color == PieceColor.Black).ToDictionary();
+    }
 }

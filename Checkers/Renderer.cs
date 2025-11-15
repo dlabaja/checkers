@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace Checkers;
 
@@ -19,6 +21,47 @@ public enum Color
 
 public class Renderer
 {
+    private bool cursorIsBlinked = false;
+    private Game game;
+    private readonly Timer renderTimer;
+    private readonly Timer blinkTimer;
+
+    public Renderer(Game game)
+    {
+        this.game = game;
+        renderTimer = new Timer(100);
+        renderTimer.Elapsed += OnRenderTimerElapsed;
+        renderTimer.AutoReset = true;
+        blinkTimer = new Timer(500);
+        blinkTimer.Elapsed += OnBlinkTimerElapsed;
+        blinkTimer.AutoReset = true;
+    }
+
+    private void OnBlinkTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        cursorIsBlinked = !cursorIsBlinked;
+    }
+
+    private void OnRenderTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        Console.Clear();
+        this.DisplayBoard(this.game.Board.GetBoard());
+    }
+    
+    public void Start()
+    {
+        renderTimer.Enabled = true;
+        blinkTimer.Enabled = true;
+    }
+
+    public void Stop()
+    {
+        this.renderTimer.Stop();
+        this.renderTimer.Dispose();
+        this.blinkTimer.Stop();
+        this.blinkTimer.Stop();
+    }
+    
     private string Fg(Color color)
     {
         return $"\e[38;5;{(int)color}m";
@@ -89,9 +132,10 @@ public class Renderer
         
         Console.WriteLine(buffer.ToString());
     }
-
-    public void Clear()
+    
+    public Game Game
     {
-        Console.Clear();
+        get { return game; }
+        set { game = value ?? throw new ArgumentNullException(nameof(value)); }
     }
 }
