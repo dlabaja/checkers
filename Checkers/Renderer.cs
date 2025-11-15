@@ -15,7 +15,10 @@ public enum Color
 {
     Black = 0,
     White = 15,
+    Purple = 99,
+    Light_Purple = 183,
     Wooden = 180,
+    Red = 196,
     Dark_Gray = 248
 }
 
@@ -29,10 +32,10 @@ public class Renderer
     public Renderer(Game game)
     {
         this.game = game;
-        renderTimer = new Timer(100);
+        renderTimer = new Timer(200);
         renderTimer.Elapsed += OnRenderTimerElapsed;
         renderTimer.AutoReset = true;
-        blinkTimer = new Timer(500);
+        blinkTimer = new Timer(700);
         blinkTimer.Elapsed += OnBlinkTimerElapsed;
         blinkTimer.AutoReset = true;
     }
@@ -100,9 +103,9 @@ public class Renderer
         }
     }
 
-    private void DisplayCell(Piece? piece, bool isLightBackground, StringBuilder buffer)
+    private void DisplayCell(Piece? piece, Color background, StringBuilder buffer)
     {
-        buffer.Append(isLightBackground ? Bg(Color.Wooden) : Bg(Color.Dark_Gray));
+        buffer.Append(Bg(background));
         if (piece != null)
         {
             DisplayPiece(piece, buffer);
@@ -114,17 +117,32 @@ public class Renderer
         
         buffer.Append(ColorReset());
     }
-    
-    public void DisplayBoard(Piece?[,] board)
+
+    private Color GetBackgroundForCell(Position position)
+    {
+        if (this.game.Selected != null)
+        {
+            return this.game.Selected == position ? Color.Purple : Color.Light_Purple;
+        }
+
+        if (this.cursorIsBlinked && this.game.Cursor == position)
+        {
+            return Color.Red;
+        }
+
+        var offset = position.y % 2;
+        var isLightBackground = (position.x + offset) % 2 == 0;
+        return isLightBackground ? Color.Wooden : Color.Dark_Gray;
+    }
+
+    private void DisplayBoard(Piece?[,] board)
     {
         var buffer = new StringBuilder();
         for (var y = 0; y < Board.BoardSize; y++)
         {
             for (var x = 0; x < Board.BoardSize; x++)
             {
-                var offset = y % 2;
-                var isLightBackground = (x + offset) % 2 == 0;
-                DisplayCell(board[y, x], isLightBackground, buffer);
+                DisplayCell(board[y, x], GetBackgroundForCell(new Position(y, x)), buffer);
             }
 
             buffer.Append('\n');

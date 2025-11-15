@@ -3,24 +3,20 @@
 public class Game
 {
     private Position cursor;
+    private Position? selected;
     private PieceColor currentColor;
     private Board board;
-    
+
     public Game()
     {
         this.cursor = new Position(7, 7);
         this.currentColor = PieceColor.White;
         this.board = new Board();
     }
-    
-    public void Play()
-    {
-        
-    }
 
     private Dictionary<Position, Piece> CurrentPieces
     {
-        get => this.currentColor == PieceColor.White ? this.board.WhitePieces : this.board.BlackPieces;
+        get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
     }
 
     private bool MoveHorizontal(List<Position> positions)
@@ -45,17 +41,34 @@ public class Game
         var positions = CurrentPieces.Keys.Where(pos => pos.y == this.cursor.y && pos.x < this.cursor.x).ToList();
         return MoveHorizontal(positions);
     }
+
+    public void Select()
+    {
+        this.selected = this.cursor;
+    }
+
+    public void Deselect()
+    {
+        this.selected = null;
+    }
     
     public Position Cursor
     {
         get { return cursor; }
     }
+
     public PieceColor CurrentColor
     {
         get { return currentColor; }
     }
+
     public Board Board
     {
         get { return board; }
+    }
+
+    public Position? Selected
+    {
+        get { return selected; }
     }
 }
