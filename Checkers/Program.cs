@@ -1,4 +1,5 @@
 ﻿using Checkers;
+using Checkers.Controls;
 using Checkers.Renderer;
 
 var game = new Game();

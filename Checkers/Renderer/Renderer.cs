@@ -5,9 +5,9 @@ namespace Checkers.Renderer;
 
 public class Renderer
 {
-    private bool cursorIsBlinked;
     private readonly Timer renderTimer;
     private readonly Timer blinkTimer;
+    private readonly IRenderer currentRenderer;
 
     public Renderer()
     {

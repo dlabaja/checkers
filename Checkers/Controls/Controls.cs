@@ -1,14 +1,10 @@
-namespace Checkers;
+namespace Checkers.Controls;
 
 public class Controls
 {
     private Thread thread;
-    private Game game;
+    private IControls? currentControls;
     private readonly CancellationTokenSource cts = new CancellationTokenSource();
-    private Dictionary<ConsoleKey, Action> keyActions = new Dictionary<ConsoleKey, Action>
-    {
-        {ConsoleKey.RightArrow, () => }
-    };
 
     public void Start()
     {
@@ -25,10 +21,17 @@ public class Controls
     {
         while (!token.IsCancellationRequested)
         {
-            if (Console.ReadKey().Key == ConsoleKey.RightArrow)
+            var key = Console.ReadKey().Key;
+            if (currentControls != null && currentControls.KeyActions.ContainsKey(key))
             {
-                Console.Beep();
+                currentControls.KeyActions[key]();
             }
         }
+    }
+    
+    public IControls? CurrentControls
+    {
+        get { return currentControls; }
+        set { currentControls = value; }
     }
 }

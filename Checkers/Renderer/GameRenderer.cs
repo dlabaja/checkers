@@ -1,10 +1,12 @@
 using System.Text;
+using static Checkers.Renderer.RenderUtils;
 
 namespace Checkers.Renderer;
 
-public class GameRenderer
+public class GameRenderer: IRenderer
 {
     private Game game;
+    private bool cursorIsBlinked;
     
     public GameRenderer(Game game)
     {
@@ -16,10 +18,10 @@ public class GameRenderer
         switch (piece.Color)
         {
             case PieceColor.White:
-                buffer.Append(RenderUtils.Fg(Color.White));
+                buffer.Append(Fg(Color.White));
                 break;
             case PieceColor.Black:
-                buffer.Append(RenderUtils.Fg(Color.Black));
+                buffer.Append(Fg(Color.Black));
                 break;
         }
 
@@ -80,5 +82,15 @@ public class GameRenderer
         }
         
         Console.WriteLine(buffer.ToString());
+    }
+
+    public void Render()
+    {
+        DisplayBoard(this.game.Board.GetBoard());
+    }
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
     }
 }
