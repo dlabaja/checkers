@@ -26,7 +26,7 @@ public class Game
             return CurrentPieces.Keys.ToList();
         }
 
-        return new List<Position>();
+        return CurrentPieces.Keys.ToList();
     }
     
     public bool MoveCursorRight()
@@ -85,12 +85,12 @@ public class Game
 
     public void Select()
     {
+        if (this.selected == this.cursor)
+        {
+            this.selected = null;
+            return;
+        }
         this.selected = this.cursor;
-    }
-
-    public void Deselect()
-    {
-        this.selected = null;
     }
     
     public Position Cursor

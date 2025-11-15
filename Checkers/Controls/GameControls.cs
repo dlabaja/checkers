@@ -15,7 +15,8 @@ public class GameControls : IControls
             {ConsoleKey.W, () => game.MoveCursorUp()},
             {ConsoleKey.S, () => game.MoveCursorDown()},
             {ConsoleKey.D, () => game.MoveCursorRight()},
-            {ConsoleKey.A, () => game.MoveCursorLeft()}
+            {ConsoleKey.A, () => game.MoveCursorLeft()},
+            {ConsoleKey.Enter, game.Select}
         };
     }
 

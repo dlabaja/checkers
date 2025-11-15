@@ -4,6 +4,7 @@ public enum Color
 {
     Black = 0,
     White = 15,
+    Dark_Purple = 54,
     Purple = 99,
     Light_Purple = 183,
     Wooden = 180,

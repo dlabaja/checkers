@@ -64,14 +64,18 @@ public class GameRenderer : IRenderer
 
     private Color GetBackgroundForCell(Position position)
     {
-        if (this.game.Selected != null)
-        {
-            return this.game.Selected == position ? Color.Purple : Color.Light_Purple;
-        }
-
         if (this.game.Cursor == position)
         {
+            if (game.Selected != null)
+            {
+                return this.cursorIsBlinked ? Color.Purple : Color.Light_Purple;
+            }
             return this.cursorIsBlinked ? Color.Red : Color.Light_Red;
+        }
+        
+        if (this.game.Selected == position)
+        {
+            return Color.Dark_Purple;
         }
 
         var offset = position.y % 2;
