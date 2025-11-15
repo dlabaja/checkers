@@ -9,7 +9,7 @@ public class Game
 
     public Game()
     {
-        this.cursor = new Position(7, 7);
+        this.cursor = new Position(7, 0);
         this.currentColor = PieceColor.White;
         this.board = new Board();
     }

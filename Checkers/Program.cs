@@ -1,6 +1,12 @@
 ﻿using Checkers;
+using Checkers.Renderer;
 
-new Renderer(new Game()).Start();
+var game = new Game();
+var renderer = new Renderer();
+var controls = new Controls();
+
+renderer.Start();
+controls.Start();
 
 while (true)
 {
