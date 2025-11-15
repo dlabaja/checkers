@@ -14,7 +14,6 @@ public class Board
     public Board()
     {
         CreateBoard();
-        this.pieces[new Position(0, 1)].Evolve();
     }
 
     private void CreateRow(PieceColor color, int offset, int rowIndex)

@@ -1,18 +1,29 @@
 using System.Text;
+using System.Timers;
 using static Checkers.Renderer.RenderUtils;
+using Timer = System.Timers.Timer;
 
 namespace Checkers.Renderer;
 
-public class GameRenderer: IRenderer
+public class GameRenderer : IRenderer
 {
     private Game game;
     private bool cursorIsBlinked;
-    
+    private readonly Timer blinkTimer;
+
     public GameRenderer(Game game)
     {
         this.game = game;
+        blinkTimer = new Timer(700);
+        blinkTimer.Elapsed += OnBlinkTimerElapsed;
+        blinkTimer.AutoReset = true;
     }
-    
+
+    private void OnBlinkTimerElapsed(object? sender, ElapsedEventArgs e)
+    {
+        cursorIsBlinked = !cursorIsBlinked;
+    }
+
     private static void DisplayPiece(Piece piece, StringBuilder buffer)
     {
         switch (piece.Color)
@@ -38,7 +49,7 @@ public class GameRenderer: IRenderer
 
     private static void DisplayCell(Piece? piece, Color background, StringBuilder buffer)
     {
-        buffer.Append(RenderUtils.Bg(background));
+        buffer.Append(Bg(background));
         if (piece != null)
         {
             DisplayPiece(piece, buffer);
@@ -47,8 +58,8 @@ public class GameRenderer: IRenderer
         {
             buffer.Append("   ");
         }
-        
-        buffer.Append(RenderUtils.ColorReset());
+
+        buffer.Append(ColorReset());
     }
 
     private Color GetBackgroundForCell(Position position)
@@ -58,9 +69,9 @@ public class GameRenderer: IRenderer
             return this.game.Selected == position ? Color.Purple : Color.Light_Purple;
         }
 
-        if (this.cursorIsBlinked && this.game.Cursor == position)
+        if (this.game.Cursor == position)
         {
-            return Color.Red;
+            return this.cursorIsBlinked ? Color.Red : Color.Light_Red;
         }
 
         var offset = position.y % 2;
@@ -80,8 +91,13 @@ public class GameRenderer: IRenderer
 
             buffer.Append('\n');
         }
-        
+
         Console.WriteLine(buffer.ToString());
+    }
+
+    public void Start()
+    {
+        this.blinkTimer.Enabled = true;
     }
 
     public void Render()
@@ -91,6 +107,7 @@ public class GameRenderer: IRenderer
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        this.blinkTimer.Stop();
+        this.blinkTimer.Dispose();
     }
 }

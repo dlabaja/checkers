@@ -8,5 +8,6 @@ public enum Color
     Light_Purple = 183,
     Wooden = 180,
     Red = 196,
+    Light_Red = 210,
     Dark_Gray = 248
 }

@@ -19,8 +19,19 @@ public class Game
         get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
     }
 
-    private bool MoveHorizontal(List<Position> positions)
+    private List<Position> GetValidCellPositions()
     {
+        if (selected == null)
+        {
+            return CurrentPieces.Keys.ToList();
+        }
+
+        return new List<Position>();
+    }
+    
+    public bool MoveCursorRight()
+    {
+        var positions = GetValidCellPositions().Where(pos => pos.y == this.cursor.y && pos.x > this.cursor.x).ToList();
         if (positions.Count == 0)
         {
             return false;
@@ -29,17 +40,17 @@ public class Game
         this.cursor = positions.OrderBy(pos => pos.x).First();
         return true;
     }
-
-    public bool MoveCursorRight()
-    {
-        var positions = CurrentPieces.Keys.Where(pos => pos.y == this.cursor.y && pos.x > this.cursor.x).ToList();
-        return MoveHorizontal(positions);
-    }
     
     public bool MoveCursorLeft()
     {
-        var positions = CurrentPieces.Keys.Where(pos => pos.y == this.cursor.y && pos.x < this.cursor.x).ToList();
-        return MoveHorizontal(positions);
+        var positions = GetValidCellPositions().Where(pos => pos.y == this.cursor.y && pos.x < this.cursor.x).ToList();
+        if (positions.Count == 0)
+        {
+            return false;
+        }
+
+        this.cursor = positions.OrderBy(pos => pos.x).Last();
+        return true;
     }
 
     public void Select()
