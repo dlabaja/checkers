@@ -13,25 +13,25 @@ public class Game
         this.currentColor = PieceColor.White;
         this.board = new Board();
     }
-
-    private Dictionary<Position, Piece> CurrentPieces
-    {
-        get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
-    }
-
-    private List<Position> GetValidCellPositions()
+    
+    private List<Position> GetValidCursorPositions()
     {
         if (selected == null)
         {
             return CurrentPieces.Keys.ToList();
         }
 
-        return CurrentPieces.Keys.ToList();
+        if (this.CurrentPieces.TryGetValue(this.selected.Value, out Piece? piece))
+        {
+            return this.board.GetPieceAllowedPositions(this.selected.Value, piece);
+        }
+        
+        return [];
     }
     
     public bool MoveCursorRight()
     {
-        var positions = GetValidCellPositions().Where(pos => pos.y == this.cursor.y && pos.x > this.cursor.x).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y == this.cursor.y && pos.x > this.cursor.x).ToList();
         if (positions.Count == 0)
         {
             return false;
@@ -43,7 +43,7 @@ public class Game
     
     public bool MoveCursorLeft()
     {
-        var positions = GetValidCellPositions().Where(pos => pos.y == this.cursor.y && pos.x < this.cursor.x).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y == this.cursor.y && pos.x < this.cursor.x).ToList();
         if (positions.Count == 0)
         {
             return false;
@@ -55,7 +55,7 @@ public class Game
 
     public bool MoveCursorUp()
     {
-        var positions = GetValidCellPositions().Where(pos => pos.y < this.cursor.y).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y < this.cursor.y).ToList();
         if (positions.Count == 0)
         {
             return false;
@@ -70,7 +70,7 @@ public class Game
 
     public bool MoveCursorDown()
     {
-        var positions = GetValidCellPositions().Where(pos => pos.y > this.cursor.y).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y > this.cursor.y).ToList();
         if (positions.Count == 0)
         {
             return false;
@@ -91,6 +91,16 @@ public class Game
             return;
         }
         this.selected = this.cursor;
+    }
+    
+    private Dictionary<Position, Piece> CurrentPieces
+    {
+        get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
+    }
+    
+    private Dictionary<Position, Piece> OpponentPieces
+    {
+        get => this.CurrentColor == PieceColor.White ? this.Board.BlackPieces : this.Board.WhitePieces;
     }
     
     public Position Cursor

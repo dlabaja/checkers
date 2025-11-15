@@ -59,6 +59,46 @@ public class Board
 
         return board;
     }
+
+    private List<Position> GetAllowedPositionsOnDiagonal(int n, Position position, int xOffset, int yOffset, Position[] opponentPieces, List<Position> list)
+    {
+        var cellIsEmpty = !opponentPieces.Contains(position);
+        var nextPosition = new Position(position.y + yOffset, position.x + xOffset);
+        if (n == 0)
+        {
+            var isNextEmpty = !opponentPieces.Contains(nextPosition);
+            if (cellIsEmpty)
+            {
+                list.Add(position);
+            }
+            else if (isNextEmpty)
+            {
+                list.Add(position);
+                list.Add(nextPosition);
+            }
+
+            return list;
+        }
+        list.Add(position);
+        return GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPieces, list);
+    }
+    
+
+    public List<Position> GetPieceAllowedPositions(Position position, Piece piece)
+    {
+        var n = piece.Type == PieceType.Pawn ? 1 : 20;
+        var oppositePieces = GetPiecesByColor(piece.Color == PieceColor.White ? PieceColor.Black : PieceColor.White).Keys.ToArray();
+        var list1 = GetAllowedPositionsOnDiagonal(n, position, 1, 1, oppositePieces, []);
+        var list2 = GetAllowedPositionsOnDiagonal(n, position, -1, 1, oppositePieces, []);
+        var list3 = GetAllowedPositionsOnDiagonal(n, position, 1, -1, oppositePieces, []);
+        var list4 = GetAllowedPositionsOnDiagonal(n, position, -1, -1, oppositePieces, []);
+        return list1.Concat(list2).Concat(list3).Concat(list4).Distinct().ToList();
+    }
+
+    public Dictionary<Position, Piece> GetPiecesByColor(PieceColor color)
+    {
+        return color == PieceColor.White ? WhitePieces : BlackPieces;
+    }
     
     public Dictionary<Position, Piece> WhitePieces
     {
