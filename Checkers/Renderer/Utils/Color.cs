@@ -1,4 +1,4 @@
-namespace Checkers.Renderer;
+namespace Checkers.Renderer.Utils;
 
 public enum Color
 {

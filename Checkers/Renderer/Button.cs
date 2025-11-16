@@ -1,4 +1,5 @@
-using static Checkers.Renderer.RenderUtils;
+using Checkers.Renderer.Utils;
+using static Checkers.Renderer.Utils.RenderUtils;
 
 namespace Checkers.Renderer;
 

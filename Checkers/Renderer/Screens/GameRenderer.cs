@@ -1,6 +1,7 @@
 using Checkers.Renderer.Interfaces;
+using Checkers.Renderer.Utils;
 using System.Text;
-using static Checkers.Renderer.RenderUtils;
+using static Checkers.Renderer.Utils.RenderUtils;
 
 namespace Checkers.Renderer.Screens;
 
