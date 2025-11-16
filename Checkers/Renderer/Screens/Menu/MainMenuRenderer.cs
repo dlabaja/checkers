@@ -6,7 +6,7 @@ public class MainMenuRenderer : MenuRenderer
     {
         get =>
         [
-            new Button("Play", Controller.RenderGame),
+            new Button("Play", () => Controller.RenderGame(new Game())),
             new Button("Rules", Controller.RenderRules),
             new Button("Controls", Controller.RenderControls),
             new Button("Exit", Controller.Exit)

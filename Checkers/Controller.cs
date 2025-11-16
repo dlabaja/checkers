@@ -40,9 +40,22 @@ public static class Controller
         controls.CurrentControls = new MenuControls(menu);
     }
 
-    public static void RenderGame()
+    public static void RenderDraw(Game game)
     {
-        var game = new Game();
+        var menu = new Menu(DrawRenderer.Buttons(game));
+        renderer.CurrentRenderer = new DrawRenderer(menu, blinker);
+        controls.CurrentControls = new MenuControls(menu);
+    }
+
+    public static void RenderGameOver(PieceColor? winner)
+    {
+        var menu = new Menu(GameOverRenderer.Buttons);
+        renderer.CurrentRenderer = new GameOverRenderer(winner, menu, blinker);
+        controls.CurrentControls = new MenuControls(menu);
+    }
+
+    public static void RenderGame(Game game)
+    {
         renderer.CurrentRenderer = new GameRenderer(game, blinker);
         controls.CurrentControls = new GameControls(game);
     }
