@@ -22,7 +22,7 @@ public class Board
         {
             if ((x + offset) % 2 == 0)
             {
-                pieces.Add(new Position(rowIndex, x), new Piece(PieceType.Pawn, color));
+                pieces.Add(new Position(rowIndex, x), new Piece(PieceType.Queen, color));
             }
         }
     }
@@ -42,16 +42,51 @@ public class Board
         }
     }
 
-    public void RotateBoard()
+    private bool CanEvolve(Position position, Piece piece)
     {
-        var maxBoardSize = 7;
-        var newPieces = new Dictionary<Position, Piece>();
-        foreach (var (position, piece) in this.pieces)
+        var evolutionRow = piece.Color == PieceColor.White ? 0 : BoardSize - 1;
+        if (position.y == evolutionRow)
         {
-            newPieces.Add(new Position(Math.Abs(position.y - maxBoardSize), Math.Abs(position.x - maxBoardSize)), piece);
+            return true;
         }
 
-        this.pieces = newPieces;
+        return false;
+    }
+    
+    private List<(Position allowedPosition, Position? captured)> GetAllowedPositionsOnDiagonal(int n, Position position, int yOffset, int xOffset, Position[] opponentPositions, Position[] playerPositions, List<(Position allowedPosition, Position? captured)> list)
+    {
+        var nextPosition = new Position(position.y + yOffset, position.x + xOffset);
+        if (playerPositions.Contains(position))
+        {
+            return list;
+        }
+
+        if (opponentPositions.Contains(position))
+        {
+            if (!playerPositions.Contains(nextPosition) && !opponentPositions.Contains(nextPosition))
+            {
+                return list.Append((nextPosition, position)).ToList();
+            }
+
+            return list;
+        }
+
+        return n == 0 ? list.Append((position, null)).ToList() : GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPositions, playerPositions, list);
+    }
+
+    private List<(Position allowedPosition, Position? captured)> GetPieceAllowedPositionsAndCapturables(Position position, Piece piece)
+    {
+        var isPawn = piece.Type == PieceType.Pawn;
+        var isBlackPawn = isPawn && piece.Color == PieceColor.Black;
+        var isWhitePawn = isPawn && piece.Color == PieceColor.White;
+        var n = isPawn ? 0 : 20;
+        var opponentPositions = GetPiecesByColor(piece.Color == PieceColor.White ? PieceColor.Black : PieceColor.White).Keys.ToArray();
+        var playerPositions = GetPiecesByColor(piece.Color).Keys.ToArray();
+        var list1 = isWhitePawn ? [] : GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x + 1), 1, 1, opponentPositions, playerPositions, []);
+        var list2 = isWhitePawn ? [] : GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x - 1), 1, -1, opponentPositions, playerPositions, []);
+        var list3 = isBlackPawn ? [] : GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x + 1), -1, 1, opponentPositions, playerPositions, []);
+        var list4 = isBlackPawn ? [] : GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x - 1), -1, -1, opponentPositions, playerPositions, []);
+        return list1.Concat(list2).Concat(list3).Concat(list4).Append((position, null)).ToList();
     }
     
     public bool Move(Position start, Position end, out Piece? captured)
@@ -78,6 +113,11 @@ public class Board
 
         this.pieces[end] = this.pieces[start];
         this.pieces.Remove(start);
+
+        if (CanEvolve(end, this.pieces[end]))
+        {
+            this.pieces[end].Evolve();
+        }
         
         return true;
     }
@@ -91,40 +131,6 @@ public class Board
         }
 
         return board;
-    }
-
-    private List<(Position allowedPosition, Position? captured)> GetAllowedPositionsOnDiagonal(int n, Position position, int yOffset, int xOffset, Position[] opponentPositions, Position[] playerPositions, List<(Position allowedPosition, Position? captured)> list)
-    {
-        var nextPosition = new Position(position.y + yOffset, position.x + xOffset);
-        if (playerPositions.Contains(position))
-        {
-            return list;
-        }
-
-        if (opponentPositions.Contains(position))
-        {
-            if (!playerPositions.Contains(nextPosition) && !opponentPositions.Contains(nextPosition))
-            {
-                return list.Append((nextPosition, position)).ToList();
-            }
-
-            return list;
-        }
-
-        return n == 0 ? list.Append((position, null)).ToList() : GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPositions, playerPositions, list);
-    }
-
-    private List<(Position allowedPosition, Position? captured)> GetPieceAllowedPositionsAndCapturables(Position position, Piece piece)
-    {
-        var isQueen = piece.Type == PieceType.Queen;
-        var n = isQueen ? 20 : 0;
-        var opponentPositions = GetPiecesByColor(piece.Color == PieceColor.White ? PieceColor.Black : PieceColor.White).Keys.ToArray();
-        var playerPositions = GetPiecesByColor(piece.Color).Keys.ToArray();
-        var list1 = isQueen ? GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x + 1), 1, 1, opponentPositions, playerPositions, []) : [];
-        var list2 = isQueen ? GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x - 1), 1, -1, opponentPositions, playerPositions, []) : [];
-        var list3 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x + 1), -1, 1, opponentPositions, playerPositions, []);
-        var list4 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x - 1), -1, -1, opponentPositions, playerPositions, []);
-        return list1.Concat(list2).Concat(list3).Concat(list4).Append((position, null)).ToList();
     }
 
     public List<Position> GetPieceAllowedPositions(Position position, Piece piece)
