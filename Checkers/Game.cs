@@ -120,13 +120,12 @@ public class Game
 
         return true;
     }
-
+    
     public bool MakeTurn(out Piece? captured)
     {
         if (Move(out captured))
         {
             SwitchCurrentColor();
-            this.board.RotateBoard();
             this.ResetCursor();
             return true;
         }

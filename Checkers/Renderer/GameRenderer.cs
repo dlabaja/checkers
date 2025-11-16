@@ -62,7 +62,7 @@ public class GameRenderer : IRenderer
         buffer.Append(ColorReset());
     }
 
-    private Color GetBackgroundForCell(Position position)
+    private Color GetBackgroundForCell(Position position, List<Position> allowedPositions)
     {
         if (this.game.Cursor == position)
         {
@@ -78,19 +78,30 @@ public class GameRenderer : IRenderer
             return Color.Dark_Purple;
         }
 
+        if (allowedPositions.Contains(position))
+        {
+            return Color.Dark_Gray;
+        }
+
         var offset = position.y % 2;
         var isLightBackground = (position.x + offset) % 2 == 0;
-        return isLightBackground ? Color.Wooden : Color.Dark_Gray;
+        return isLightBackground ? Color.Wooden : Color.Light_Gray;
     }
 
     private void DisplayBoard(Piece?[,] board)
     {
+        var selected = this.game.Selected;
+        var allowedPositions = selected.HasValue ? this.game.Board.GetPieceAllowedPositions(selected.Value, this.game.Board.Pieces[selected.Value]) : [];
+        if (allowedPositions.Count > 0)
+        {
+            Console.WriteLine("");
+        }
         var buffer = new StringBuilder();
         for (var y = 0; y < Board.BoardSize; y++)
         {
             for (var x = 0; x < Board.BoardSize; x++)
             {
-                DisplayCell(board[y, x], GetBackgroundForCell(new Position(y, x)), buffer);
+                DisplayCell(board[y, x], GetBackgroundForCell(new Position(y, x), allowedPositions), buffer);
             }
 
             buffer.Append('\n');
