@@ -85,7 +85,7 @@ public class Game
 
     public bool Select()
     {
-        if (this.board.Pieces.TryGetValue(this.cursor, out _))
+        if (this.board.Pieces.ContainsKey(this.cursor))
         {
             this.selected = this.cursor;
             return true;
@@ -94,23 +94,25 @@ public class Game
         return false;
     }
 
+    public bool Move(out Piece? captured)
+    {
+        captured = null;
+        if (this.selected == null)
+        {
+            return false;
+        }
+        
+        if (this.Board.Move(this.selected.Value, this.cursor, out captured))
+        {
+            this.selected = null;
+        }
+
+        return true;
+    }
+
     public void Deselect()
     {
         this.selected = null;
-    }
-
-    public bool Move(Position position, out Piece? captured)
-    {
-        captured = null;
-        if (this.selected != null)
-        {
-            this.board.Pieces[this.cursor] = this.board.Pieces[this.selected.Value];
-            this.board.Pieces.Remove(this.selected.Value);
-            this.selected = null;
-            return true;
-        }
-
-        return false;
     }
     
     private Dictionary<Position, Piece> CurrentPieces
