@@ -9,6 +9,8 @@ public record struct Position(int y, int x)
 public class Board
 {
     public const byte BoardSize = 8;
+    public Action? OnCapture; 
+    private Position? latestDeath;
     private Dictionary<Position, Piece> pieces = new Dictionary<Position, Piece>();
 
     public Board()
@@ -120,10 +122,12 @@ public class Board
         {
             captured = this.pieces[capturedPosition.Value];
             this.pieces.Remove(capturedPosition.Value);
+            this.OnCapture?.Invoke();
         }
 
         this.pieces[end] = this.pieces[start];
         this.pieces.Remove(start);
+        this.latestDeath = capturedPosition;
 
         if (CanEvolve(end, this.pieces[end]))
         {
@@ -168,4 +172,6 @@ public class Board
     {
         get { return pieces; }
     }
+    
+    public Position? LatestDeath => latestDeath;
 }

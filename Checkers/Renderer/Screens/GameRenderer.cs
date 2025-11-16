@@ -14,6 +14,7 @@ public class GameRenderer : IRenderer
     {
         this.game = game;
         this.blinker = blinker;
+        this.game.Board.OnCapture += Console.Beep;
     }
 
     private static void DisplayPiece(Piece piece, StringBuilder buffer)
@@ -39,12 +40,16 @@ public class GameRenderer : IRenderer
         }
     }
 
-    private static void DisplayCell(Piece? piece, Color background, StringBuilder buffer)
+    private void DisplayCell(Piece? piece, Position position, Color background, StringBuilder buffer)
     {
         buffer.Append(Bg(background));
         if (piece != null)
         {
             DisplayPiece(piece, buffer);
+        }
+        else if (this.game.Board.LatestDeath == position)
+        {
+            buffer.Append($"{Fg(Color.Red)}{Character.HairSpace}{Character.Skull}{Character.HairSpace}");
         }
         else
         {
@@ -89,7 +94,8 @@ public class GameRenderer : IRenderer
         {
             for (var x = 0; x < Board.BoardSize; x++)
             {
-                DisplayCell(board[y, x], GetBackgroundForCell(new Position(y, x), allowedPositions), buffer);
+                var position = new Position(y, x);
+                DisplayCell(board[y, x], position, GetBackgroundForCell(position, allowedPositions), buffer);
             }
 
             buffer.Append('\n');

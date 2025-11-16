@@ -38,7 +38,7 @@ public class Game
 
     private void ResetCursor()
     {
-        this.cursor = defaultCursorPosition;
+        this.cursor = this.CurrentPieces.First().Key;
     }
 
     private bool IsGameOver()

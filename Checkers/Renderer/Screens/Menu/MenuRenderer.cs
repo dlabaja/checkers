@@ -1,6 +1,6 @@
 using Checkers.Renderer.Interfaces;
 
-namespace Checkers.Renderer;
+namespace Checkers.Renderer.Screens.Menu;
 
 public class MenuRenderer: IRenderer
 {
