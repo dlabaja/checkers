@@ -1,4 +1,4 @@
-namespace Checkers.Renderer.Menu;
+namespace Checkers.Renderer.Screens.Menu;
 
 public class RulesRenderer: MenuRenderer
 {
@@ -9,10 +9,10 @@ public class RulesRenderer: MenuRenderer
             new Button("Back to menu", Controller.RenderMainMenu),
         ];
     }
-    private static readonly string text = """
-                                          Rules:
-                                          Check it here: https://www.deskovehry.info/pravidla/ceska-dama.htm
-                                          """;
+    private const string text = """
+                                Rules:
+                                Check it here: https://www.deskovehry.info/pravidla/ceska-dama.htm
+                                """;
     
     public RulesRenderer(Checkers.Menu menu, Blinker blinker) 
         : base(menu, text, blinker) {}

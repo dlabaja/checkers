@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using Checkers.Renderer.Interfaces;
+using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace Checkers.Renderer;

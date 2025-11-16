@@ -1,3 +1,5 @@
+using Checkers.Renderer.Interfaces;
+
 namespace Checkers.Renderer;
 
 public class MenuRenderer: IRenderer

@@ -1,4 +1,4 @@
-namespace Checkers.Renderer;
+namespace Checkers.Renderer.Interfaces;
 
 public interface IRenderer
 {

@@ -1,8 +1,8 @@
+using Checkers.Renderer.Interfaces;
 using System.Text;
-using System.Timers;
 using static Checkers.Renderer.RenderUtils;
 
-namespace Checkers.Renderer;
+namespace Checkers.Renderer.Screens;
 
 public class GameRenderer : IRenderer
 {

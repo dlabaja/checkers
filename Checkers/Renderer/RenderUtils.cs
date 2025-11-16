@@ -14,6 +14,6 @@ public static class RenderUtils
 
     public static string ColorReset()
     {
-        return $"\e[0m";
+        return "\e[0m";
     }
 }

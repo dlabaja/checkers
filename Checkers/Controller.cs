@@ -1,6 +1,7 @@
 using Checkers.Controls;
 using Checkers.Renderer;
-using Checkers.Renderer.Menu;
+using Checkers.Renderer.Screens;
+using Checkers.Renderer.Screens.Menu;
 
 namespace Checkers;
 
