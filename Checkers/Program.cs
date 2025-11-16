@@ -2,7 +2,4 @@
 
 Controller.Start();
 
-while (true)
-{
-    
-}
+while (true) {}

@@ -114,6 +114,7 @@ public class Game
     private bool Move(out Piece? captured)
     {
         captured = null;
+        var capturePossible = IsPossibleCapture();
         if (this.selected == null)
         {
             return false;
@@ -123,8 +124,26 @@ public class Game
         {
             this.selected = null;
         }
+        
+        if (captured == null && capturePossible)
+        {
+            this.Board.CapturePiece(this.cursor);
+        }
 
         return true;
+    }
+
+    private bool IsPossibleCapture()
+    {
+        foreach (var (position, piece) in this.CurrentPieces)
+        {
+            if (this.board.GetPieceCapturables(position, piece).Count != 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     public bool MakeTurn(out Piece? captured)

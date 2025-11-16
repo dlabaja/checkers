@@ -58,14 +58,14 @@ public class Board
     private List<(Position allowedPosition, Position? captured)> GetAllowedPositionsOnDiagonal(int n, Position position, int yOffset, int xOffset, Position[] opponentPositions, Position[] playerPositions, List<(Position allowedPosition, Position? captured)> list)
     {
         var nextPosition = new Position(position.y + yOffset, position.x + xOffset);
-        if (playerPositions.Contains(position))
+        if (PositionOutOfBounds(position) || playerPositions.Contains(position))
         {
             return list;
         }
 
         if (opponentPositions.Contains(position))
         {
-            if (!playerPositions.Contains(nextPosition) && !opponentPositions.Contains(nextPosition))
+            if (!PositionOutOfBounds(nextPosition) && !playerPositions.Contains(nextPosition) && !opponentPositions.Contains(nextPosition))
             {
                 return list.Append((nextPosition, position)).ToList();
             }
@@ -102,6 +102,13 @@ public class Board
         return !Utils.NumberInRange(position.x, 0, BoardSize) || !Utils.NumberInRange(position.y, 0, BoardSize);
     }
 
+    public void CapturePiece(Position position)
+    {
+        this.pieces.Remove(position);
+        this.OnCapture?.Invoke();
+        this.latestDeath = position;
+    }
+
     public bool Move(Position start, Position end, out Piece? captured)
     {
         captured = null;
@@ -121,13 +128,11 @@ public class Board
         if (capturedPosition != null)
         {
             captured = this.pieces[capturedPosition.Value];
-            this.pieces.Remove(capturedPosition.Value);
-            this.OnCapture?.Invoke();
+            CapturePiece(capturedPosition.Value);
         }
 
         this.pieces[end] = this.pieces[start];
         this.pieces.Remove(start);
-        this.latestDeath = capturedPosition;
 
         if (CanEvolve(end, this.pieces[end]))
         {
@@ -151,6 +156,11 @@ public class Board
     public List<Position> GetPieceAllowedPositions(Position position, Piece piece)
     {
         return GetPieceAllowedPositionsAndCapturables(position, piece).Select(x => x.allowedPosition).ToList();
+    }
+    
+    public List<Position> GetPieceCapturables(Position position, Piece piece)
+    {
+        return GetPieceAllowedPositionsAndCapturables(position, piece).Select(x => x.captured).OfType<Position>().ToList();
     }
 
     private Dictionary<Position, Piece> GetPiecesByColor(PieceColor color)
