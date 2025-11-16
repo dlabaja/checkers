@@ -83,10 +83,6 @@ public class GameRenderer : IRenderer
     {
         var selected = this.game.Selected;
         var allowedPositions = selected.HasValue ? this.game.Board.GetPieceAllowedPositions(selected.Value, this.game.Board.Pieces[selected.Value]) : [];
-        if (allowedPositions.Count > 0)
-        {
-            Console.WriteLine("");
-        }
         var buffer = new StringBuilder();
         for (var y = 0; y < Board.BoardSize; y++)
         {
@@ -98,11 +94,17 @@ public class GameRenderer : IRenderer
             buffer.Append('\n');
         }
 
-        Console.WriteLine(buffer.ToString());
+        Console.Write(buffer.ToString());
+    }
+
+    private void DisplayText()
+    {
+        Console.WriteLine($"Currently playing: {this.game.CurrentColor}");
     }
 
     public void Render()
     {
         DisplayBoard(this.game.Board.GetBoard());
+        DisplayText();
     }
 }

@@ -20,15 +20,22 @@ public static class Controller
 
     public static void RenderMainMenu()
     {
-        var menu = new Menu(MainMenuRenderer.buttons);
+        var menu = new Menu(MainMenuRenderer.Buttons);
         renderer.CurrentRenderer = new MainMenuRenderer(menu, blinker);
         controls.CurrentControls = new MenuControls(menu);
     }
 
     public static void RenderRules()
     {
-        var menu = new Menu(RulesRenderer.buttons);
+        var menu = new Menu(RulesRenderer.Buttons);
         renderer.CurrentRenderer = new RulesRenderer(menu, blinker);
+        controls.CurrentControls = new MenuControls(menu);
+    }
+    
+    public static void RenderControls()
+    {
+        var menu = new Menu(ControlsRenderer.Buttons);
+        renderer.CurrentRenderer = new ControlsRenderer(menu, blinker);
         controls.CurrentControls = new MenuControls(menu);
     }
 

@@ -22,7 +22,8 @@ public class Button
 
     public string ToString(bool highlighted)
     {
-        return highlighted ? $"{Bg(Color.White)}{Fg(Color.Black)}[{text}]{ColorReset()}" : $"[{text}]";
+        var color = highlighted ? $"{Bg(Color.White)}{Fg(Color.Black)}" : $"{Bg(Color.Dark_Gray)}{Fg(Color.Black)}";
+        return $"{color}[{text}]{ColorReset()}";
     }
     
     public string Text
