@@ -56,6 +56,7 @@ public static class Controller
 
     public static void RenderGame(Game game)
     {
+        game.OnGameOver += color => RenderGameOver(color); 
         renderer.CurrentRenderer = new GameRenderer(game, blinker);
         controls.CurrentControls = new GameControls(game);
     }
