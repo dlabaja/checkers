@@ -60,39 +60,38 @@ public class Board
         return board;
     }
 
-    private List<Position> GetAllowedPositionsOnDiagonal(int n, Position position, int xOffset, int yOffset, Position[] opponentPieces, List<Position> list)
+    private List<Position> GetAllowedPositionsOnDiagonal(int n, Position position, int yOffset, int xOffset, Position[] opponentPositions, Position[] playerPositions, List<Position> list)
     {
-        var cellIsEmpty = !opponentPieces.Contains(position);
         var nextPosition = new Position(position.y + yOffset, position.x + xOffset);
-        if (n == 0)
+        if (playerPositions.Contains(position))
         {
-            var isNextEmpty = !opponentPieces.Contains(nextPosition);
-            if (cellIsEmpty)
+            return list;
+        }
+
+        if (opponentPositions.Contains(position))
+        {
+            if (!playerPositions.Contains(nextPosition) && !opponentPositions.Contains(nextPosition))
             {
-                list.Add(position);
-            }
-            else if (isNextEmpty)
-            {
-                list.Add(position);
-                list.Add(nextPosition);
+                return list.Concat([position, nextPosition]).ToList();
             }
 
             return list;
         }
-        list.Add(position);
-        return GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPieces, list);
+
+        return n == 0 ? list.Append(position).ToList() : GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPositions, playerPositions, list);
     }
     
 
     public List<Position> GetPieceAllowedPositions(Position position, Piece piece)
     {
-        var n = piece.Type == PieceType.Pawn ? 1 : 20;
-        var oppositePieces = GetPiecesByColor(piece.Color == PieceColor.White ? PieceColor.Black : PieceColor.White).Keys.ToArray();
-        var list1 = GetAllowedPositionsOnDiagonal(n, position, 1, 1, oppositePieces, []);
-        var list2 = GetAllowedPositionsOnDiagonal(n, position, -1, 1, oppositePieces, []);
-        var list3 = GetAllowedPositionsOnDiagonal(n, position, 1, -1, oppositePieces, []);
-        var list4 = GetAllowedPositionsOnDiagonal(n, position, -1, -1, oppositePieces, []);
-        return list1.Concat(list2).Concat(list3).Concat(list4).Distinct().ToList();
+        var n = piece.Type == PieceType.Pawn ? 0 : 20;
+        var opponentPositions = GetPiecesByColor(piece.Color == PieceColor.White ? PieceColor.Black : PieceColor.White).Keys.ToArray();
+        var playerPositions = GetPiecesByColor(piece.Color).Keys.ToArray();
+        var list4 = GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x + 1), 1, 1, opponentPositions, playerPositions, []);
+        var list1 = GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x - 1), 1, -1, opponentPositions, playerPositions, []);
+        var list2 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x + 1), -1, 1, opponentPositions, playerPositions, []);
+        var list3 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x - 1), -1, -1, opponentPositions, playerPositions, []);
+        return list1.Concat(list2).Concat(list3).Concat(list4).Append(position).ToList();
     }
 
     public Dictionary<Position, Piece> GetPiecesByColor(PieceColor color)
