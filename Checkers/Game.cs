@@ -26,7 +26,7 @@ public class Game
             return this.board.GetPieceAllowedPositions(this.selected.Value, piece);
         }
         
-        return [];
+        return CurrentPieces.Keys.ToList();
     }
     
     public bool MoveCursorRight()
@@ -83,14 +83,30 @@ public class Game
         return true;
     }
 
+    // todo do controlů
     public void Select()
     {
+        // deselect
         if (this.selected == this.cursor)
         {
             this.selected = null;
             return;
         }
-        this.selected = this.cursor;
+
+        // reselect
+        if (this.board.Pieces.TryGetValue(this.cursor, out _))
+        {
+            this.selected = this.cursor;
+            return;
+        }
+        
+        // move
+        if (this.selected != null)
+        {
+            this.board.Pieces[this.cursor] = this.board.Pieces[this.selected.Value];
+            this.board.Pieces.Remove(this.selected.Value);
+            this.selected = null;
+        }
     }
     
     private Dictionary<Position, Piece> CurrentPieces

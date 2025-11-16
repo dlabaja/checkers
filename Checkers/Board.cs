@@ -10,7 +10,7 @@ public class Board
 {
     public const byte BoardSize = 8;
     private readonly Dictionary<Position, Piece> pieces = new Dictionary<Position, Piece>();
-    
+
     public Board()
     {
         CreateBoard();
@@ -72,7 +72,7 @@ public class Board
         {
             if (!playerPositions.Contains(nextPosition) && !opponentPositions.Contains(nextPosition))
             {
-                return list.Concat([position, nextPosition]).ToList();
+                return list.Append(nextPosition).ToList();
             }
 
             return list;
@@ -84,13 +84,14 @@ public class Board
 
     public List<Position> GetPieceAllowedPositions(Position position, Piece piece)
     {
-        var n = piece.Type == PieceType.Pawn ? 0 : 20;
+        var isQueen = piece.Type == PieceType.Queen;
+        var n = isQueen ? 20 : 0;
         var opponentPositions = GetPiecesByColor(piece.Color == PieceColor.White ? PieceColor.Black : PieceColor.White).Keys.ToArray();
         var playerPositions = GetPiecesByColor(piece.Color).Keys.ToArray();
-        var list4 = GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x + 1), 1, 1, opponentPositions, playerPositions, []);
-        var list1 = GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x - 1), 1, -1, opponentPositions, playerPositions, []);
-        var list2 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x + 1), -1, 1, opponentPositions, playerPositions, []);
-        var list3 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x - 1), -1, -1, opponentPositions, playerPositions, []);
+        var list1 = isQueen ? GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x + 1), 1, 1, opponentPositions, playerPositions, []) : [];
+        var list2 = isQueen ? GetAllowedPositionsOnDiagonal(n, new Position(position.y + 1, position.x - 1), 1, -1, opponentPositions, playerPositions, []) : [];
+        var list3 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x + 1), -1, 1, opponentPositions, playerPositions, []);
+        var list4 = GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x - 1), -1, -1, opponentPositions, playerPositions, []);
         return list1.Concat(list2).Concat(list3).Concat(list4).Append(position).ToList();
     }
 
@@ -107,5 +108,10 @@ public class Board
     public Dictionary<Position, Piece> BlackPieces
     {
         get => this.pieces.Where(x => x.Value.Color == PieceColor.Black).ToDictionary();
+    }
+    
+    public Dictionary<Position, Piece> Pieces
+    {
+        get { return pieces; }
     }
 }
