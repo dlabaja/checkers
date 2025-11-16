@@ -1,5 +1,6 @@
 using Checkers.Controls;
 using Checkers.Renderer;
+using Checkers.Renderer.Menu;
 
 namespace Checkers;
 
@@ -11,16 +12,35 @@ public static class Controller
 
     public static void Start()
     {
-        var menu = new Menu([new Button("Play"), new Button("Rules"), new Button("Exit")]);
-        renderer.CurrentRenderer = new MenuRenderer(menu, "", blinker);
-        controls.CurrentControls = new MenuControls(menu);
         blinker.Start();
         renderer.Start();
         controls.Start();
+        RenderMainMenu();
     }
 
     public static void RenderMainMenu()
     {
-        
+        var menu = new Menu(MainMenuRenderer.buttons);
+        renderer.CurrentRenderer = new MainMenuRenderer(menu, blinker);
+        controls.CurrentControls = new MenuControls(menu);
+    }
+
+    public static void RenderRules()
+    {
+        var menu = new Menu(RulesRenderer.buttons);
+        renderer.CurrentRenderer = new RulesRenderer(menu, blinker);
+        controls.CurrentControls = new MenuControls(menu);
+    }
+
+    public static void RenderGame()
+    {
+        var game = new Game();
+        renderer.CurrentRenderer = new GameRenderer(game, blinker);
+        controls.CurrentControls = new GameControls(game);
+    }
+
+    public static void Exit()
+    {
+        Environment.Exit(0);
     }
 }

@@ -47,6 +47,11 @@ public class Menu
         }
         this.buttons[head].Highlighted = true;
     }
+
+    public void SelectButton()
+    {
+        this.buttons[head].Action();
+    }
     
     public List<Button> Buttons
     {

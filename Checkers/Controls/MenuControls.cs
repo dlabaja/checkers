@@ -14,7 +14,7 @@ public class MenuControls: IControls
             {ConsoleKey.DownArrow, menu.HighlightNextButton},
             {ConsoleKey.W, menu.HighlightPrevButton},
             {ConsoleKey.S, menu.HighlightNextButton},
-            //{ConsoleKey.Enter, OnEnter}
+            {ConsoleKey.Enter, menu.SelectButton}
         };
     }
 
