@@ -22,9 +22,9 @@ public class Controls
         while (!token.IsCancellationRequested)
         {
             var key = Console.ReadKey().Key;
-            if (currentControls != null && currentControls.KeyActions.ContainsKey(key))
+            if (currentControls != null && currentControls.KeyActions.TryGetValue(key, out Action? value))
             {
-                currentControls.KeyActions[key]();
+                value();
             }
         }
     }

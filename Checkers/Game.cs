@@ -2,6 +2,7 @@
 
 public class Game
 {
+    public event Action<PieceColor>? OnGameOver;
     private readonly Position defaultCursorPosition = new Position(7, 0);
     private Position cursor;
     private Position? selected;
@@ -38,6 +39,11 @@ public class Game
     private void ResetCursor()
     {
         this.cursor = defaultCursorPosition;
+    }
+
+    private bool IsGameOver()
+    {
+        return this.Board.WhitePieces.Count == 0 || this.Board.BlackPieces.Count == 0;
     }
     
     public bool MoveCursorRight()
@@ -125,6 +131,11 @@ public class Game
     {
         if (Move(out captured))
         {
+            if (IsGameOver())
+            {
+                this.OnGameOver?.Invoke(this.currentColor);
+                return true;
+            }
             SwitchCurrentColor();
             this.ResetCursor();
             return true;
@@ -143,23 +154,11 @@ public class Game
         get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
     }
     
-    public Position Cursor
-    {
-        get { return cursor; }
-    }
+    public Position Cursor => cursor;
 
-    public PieceColor CurrentColor
-    {
-        get { return currentColor; }
-    }
+    public PieceColor CurrentColor => currentColor;
 
-    public Board Board
-    {
-        get { return board; }
-    }
+    public Board Board => board;
 
-    public Position? Selected
-    {
-        get { return selected; }
-    }
+    public Position? Selected => selected;
 }

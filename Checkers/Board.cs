@@ -22,7 +22,7 @@ public class Board
         {
             if ((x + offset) % 2 == 0)
             {
-                pieces.Add(new Position(rowIndex, x), new Piece(PieceType.Queen, color));
+                pieces.Add(new Position(rowIndex, x), new Piece(PieceType.Pawn, color));
             }
         }
     }
