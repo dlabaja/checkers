@@ -9,7 +9,7 @@ public record struct Position(int y, int x)
 public class Board
 {
     public const byte BoardSize = 8;
-    private readonly Dictionary<Position, Piece> pieces = new Dictionary<Position, Piece>();
+    private Dictionary<Position, Piece> pieces = new Dictionary<Position, Piece>();
 
     public Board()
     {
@@ -42,6 +42,18 @@ public class Board
         }
     }
 
+    public void RotateBoard()
+    {
+        var maxBoardSize = 7;
+        var newPieces = new Dictionary<Position, Piece>();
+        foreach (var (position, piece) in this.pieces)
+        {
+            newPieces.Add(new Position(Math.Abs(position.y - maxBoardSize), Math.Abs(position.x - maxBoardSize)), piece);
+        }
+
+        this.pieces = newPieces;
+    }
+    
     public bool Move(Position start, Position end, out Piece? captured)
     {
         captured = null;

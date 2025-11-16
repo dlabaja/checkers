@@ -2,6 +2,7 @@
 
 public class Game
 {
+    private readonly Position defaultCursorPosition = new Position(7, 0);
     private Position cursor;
     private Position? selected;
     private PieceColor currentColor;
@@ -9,7 +10,7 @@ public class Game
 
     public Game()
     {
-        this.cursor = new Position(7, 0);
+        this.cursor = defaultCursorPosition;
         this.currentColor = PieceColor.White;
         this.board = new Board();
     }
@@ -27,6 +28,16 @@ public class Game
         }
         
         return CurrentPieces.Keys.ToList();
+    }
+
+    private void SwitchCurrentColor()
+    {
+        this.currentColor = this.currentColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+    }
+
+    private void ResetCursor()
+    {
+        this.cursor = defaultCursorPosition;
     }
     
     public bool MoveCursorRight()
@@ -94,7 +105,7 @@ public class Game
         return false;
     }
 
-    public bool Move(out Piece? captured)
+    private bool Move(out Piece? captured)
     {
         captured = null;
         if (this.selected == null)
@@ -110,6 +121,19 @@ public class Game
         return true;
     }
 
+    public bool MakeTurn(out Piece? captured)
+    {
+        if (Move(out captured))
+        {
+            SwitchCurrentColor();
+            this.board.RotateBoard();
+            this.ResetCursor();
+            return true;
+        }
+
+        return false;
+    }
+
     public void Deselect()
     {
         this.selected = null;
@@ -118,11 +142,6 @@ public class Game
     private Dictionary<Position, Piece> CurrentPieces
     {
         get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
-    }
-    
-    private Dictionary<Position, Piece> OpponentPieces
-    {
-        get => this.CurrentColor == PieceColor.White ? this.Board.BlackPieces : this.Board.WhitePieces;
     }
     
     public Position Cursor

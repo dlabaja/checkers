@@ -38,7 +38,7 @@ public class GameControls : IControls
 
         if (!this.game.Board.Pieces.ContainsKey(this.game.Cursor))
         {
-            this.game.Move(out Piece? piece);
+            this.game.MakeTurn(out Piece? piece);
         }
     }
 
