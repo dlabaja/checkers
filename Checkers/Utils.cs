@@ -30,4 +30,9 @@ public static class Utils
         }
         return closest;
     }
+
+    public static bool NumberInRange(int x, int min, int maxExcluded)
+    {
+        return x >= min && x < maxExcluded;
+    }
 }

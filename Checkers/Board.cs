@@ -32,12 +32,12 @@ public class Board
         for (var y = 0; y < BoardSize; y++)
         {
             var color = y < 3 ? PieceColor.Black : PieceColor.White;
-            var offset = y % 2 == 0 ? 1 : 0; 
+            var offset = y % 2 == 0 ? 1 : 0;
             if (y is 3 or 4)
             {
                 continue;
             }
-            
+
             CreateRow(color, offset, y);
         }
     }
@@ -52,7 +52,7 @@ public class Board
 
         return false;
     }
-    
+
     private List<(Position allowedPosition, Position? captured)> GetAllowedPositionsOnDiagonal(int n, Position position, int yOffset, int xOffset, Position[] opponentPositions, Position[] playerPositions, List<(Position allowedPosition, Position? captured)> list)
     {
         var nextPosition = new Position(position.y + yOffset, position.x + xOffset);
@@ -71,7 +71,13 @@ public class Board
             return list;
         }
 
-        return n == 0 ? list.Append((position, null)).ToList() : GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPositions, playerPositions, list);
+        if (n == 0 || PositionOutOfBounds(nextPosition))
+        {
+            return list.Append((position, null)).ToList();
+        }
+
+        list.Add((position, null));
+        return GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPositions, playerPositions, list);
     }
 
     private List<(Position allowedPosition, Position? captured)> GetPieceAllowedPositionsAndCapturables(Position position, Piece piece)
@@ -88,7 +94,12 @@ public class Board
         var list4 = isBlackPawn ? [] : GetAllowedPositionsOnDiagonal(n, new Position(position.y - 1, position.x - 1), -1, -1, opponentPositions, playerPositions, []);
         return list1.Concat(list2).Concat(list3).Concat(list4).Append((position, null)).ToList();
     }
-    
+
+    private static bool PositionOutOfBounds(Position position)
+    {
+        return !Utils.NumberInRange(position.x, 0, BoardSize) || !Utils.NumberInRange(position.y, 0, BoardSize);
+    }
+
     public bool Move(Position start, Position end, out Piece? captured)
     {
         captured = null;
@@ -96,7 +107,7 @@ public class Board
         {
             return false;
         }
-        
+
         var allowedPositionsAndCaptures = this.GetPieceAllowedPositionsAndCapturables(start, this.pieces[start]);
         var allowedPositions = allowedPositionsAndCaptures.Select(x => x.allowedPosition).ToList();
         if (!allowedPositions.Contains(end))
@@ -118,13 +129,13 @@ public class Board
         {
             this.pieces[end].Evolve();
         }
-        
+
         return true;
     }
 
     public Piece?[,] GetBoard()
     {
-        var board = new Piece?[8,8];
+        var board = new Piece?[8, 8];
         foreach (var (pos, piece) in pieces)
         {
             board[pos.y, pos.x] = piece;
@@ -142,17 +153,17 @@ public class Board
     {
         return color == PieceColor.White ? WhitePieces : BlackPieces;
     }
-    
+
     public Dictionary<Position, Piece> WhitePieces
     {
         get => this.pieces.Where(x => x.Value.Color == PieceColor.White).ToDictionary();
     }
-    
+
     public Dictionary<Position, Piece> BlackPieces
     {
         get => this.pieces.Where(x => x.Value.Color == PieceColor.Black).ToDictionary();
     }
-    
+
     public Dictionary<Position, Piece> Pieces
     {
         get { return pieces; }
