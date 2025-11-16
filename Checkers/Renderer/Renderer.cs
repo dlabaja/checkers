@@ -35,11 +35,6 @@ public class Renderer
     public IRenderer? CurrentRenderer
     {
         get { return this.currentRenderer; }
-        set
-        {
-            this.currentRenderer?.Dispose();
-            this.currentRenderer = value;
-            this.currentRenderer?.Start();
-        }
+        set { this.currentRenderer = value; }
     }
 }

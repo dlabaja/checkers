@@ -1,27 +1,18 @@
 using System.Text;
 using System.Timers;
 using static Checkers.Renderer.RenderUtils;
-using Timer = System.Timers.Timer;
 
 namespace Checkers.Renderer;
 
 public class GameRenderer : IRenderer
 {
     private Game game;
-    private bool cursorIsBlinked;
-    private readonly Timer blinkTimer;
+    private Blinker blinker;
 
-    public GameRenderer(Game game)
+    public GameRenderer(Game game, Blinker blinker)
     {
         this.game = game;
-        blinkTimer = new Timer(700);
-        blinkTimer.Elapsed += OnBlinkTimerElapsed;
-        blinkTimer.AutoReset = true;
-    }
-
-    private void OnBlinkTimerElapsed(object? sender, ElapsedEventArgs e)
-    {
-        cursorIsBlinked = !cursorIsBlinked;
+        this.blinker = blinker;
     }
 
     private static void DisplayPiece(Piece piece, StringBuilder buffer)
@@ -68,9 +59,9 @@ public class GameRenderer : IRenderer
         {
             if (game.Selected != null)
             {
-                return this.cursorIsBlinked ? Color.Purple : Color.Light_Purple;
+                return this.blinker.CursorIsBlinked ? Color.Purple : Color.Light_Purple;
             }
-            return this.cursorIsBlinked ? Color.Red : Color.Light_Red;
+            return this.blinker.CursorIsBlinked ? Color.Red : Color.Light_Red;
         }
         
         if (this.game.Selected == position)
@@ -110,19 +101,8 @@ public class GameRenderer : IRenderer
         Console.WriteLine(buffer.ToString());
     }
 
-    public void Start()
-    {
-        this.blinkTimer.Enabled = true;
-    }
-
     public void Render()
     {
         DisplayBoard(this.game.Board.GetBoard());
-    }
-
-    public void Dispose()
-    {
-        this.blinkTimer.Stop();
-        this.blinkTimer.Dispose();
     }
 }

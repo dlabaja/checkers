@@ -14,6 +14,6 @@ public static class RenderUtils
 
     public static string ColorReset()
     {
-        return $"{Fg(Color.White)}{Bg(Color.Black)}";
+        return $"\e[0m";
     }
 }

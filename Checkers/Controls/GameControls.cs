@@ -42,8 +42,5 @@ public class GameControls : IControls
         }
     }
 
-    public Dictionary<ConsoleKey, Action> KeyActions
-    {
-        get => this.keyActions;
-    }
+    public Dictionary<ConsoleKey, Action> KeyActions => this.keyActions;
 }

@@ -2,30 +2,23 @@ namespace Checkers.Renderer;
 
 public class MenuRenderer: IRenderer
 {
-    private Menu menu;
-    private readonly string logo = """
-                           ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗███████╗██████╗ ███████╗
-                          ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝██╔════╝██╔══██╗██╔════╝
-                          ██║     ███████║█████╗  ██║     █████╔╝ █████╗  ██████╔╝███████╗
-                          ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ ██╔══╝  ██╔══██╗╚════██║
-                          ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗███████╗██║  ██║███████║
-                           ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
-                          """;
+    private Checkers.Menu menu;
+    private Blinker blinker;
+    private string text;
 
-    public MenuRenderer()
+    public MenuRenderer(Checkers.Menu menu, string text, Blinker blinker)
     {
-        this.menu = new Menu([new Button("Play"), new Button("Rules"), new Button("Exit")]);
+        this.menu = menu;
+        this.text = text;
+        this.blinker = blinker;
     }
     
-    public void Start() {}
-
     public void Render()
     {
-        Console.WriteLine(logo);
-        Console.WriteLine("--------------Made by Jan Dlabaja as a C# homework--------------");
-        Console.WriteLine(this.menu.Buttons[0]);
-        Console.WriteLine(this.menu.Buttons[1]);
+        Console.WriteLine(this.text);
+        foreach (var button in menu.Buttons)
+        {
+            Console.WriteLine(button.ToString(blinker.CursorIsBlinked && button.Highlighted));
+        }
     }
-
-    public void Dispose() {}
 }

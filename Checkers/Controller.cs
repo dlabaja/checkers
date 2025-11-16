@@ -3,22 +3,24 @@ using Checkers.Renderer;
 
 namespace Checkers;
 
-public class Controller
+public static class Controller
 {
-    private Renderer.Renderer renderer;
-    private Controls.Controls controls;
-    
-    public Controller()
+    private static Renderer.Renderer renderer = new Renderer.Renderer();
+    private static Controls.Controls controls = new Controls.Controls();
+    private static Blinker blinker = new Blinker();
+
+    public static void Start()
     {
-        this.renderer = new Renderer.Renderer();
-        this.controls = new Controls.Controls();
+        var menu = new Menu([new Button("Play"), new Button("Rules"), new Button("Exit")]);
+        renderer.CurrentRenderer = new MenuRenderer(menu, "", blinker);
+        controls.CurrentControls = new MenuControls(menu);
+        blinker.Start();
+        renderer.Start();
+        controls.Start();
     }
 
-    public void Start()
+    public static void RenderMainMenu()
     {
-        this.renderer.Start();
-        this.controls.Start();
-        this.renderer.CurrentRenderer = new MenuRenderer();
-        this.controls.CurrentControls = new MenuControls();
+        
     }
 }

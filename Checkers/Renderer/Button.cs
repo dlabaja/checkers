@@ -18,8 +18,8 @@ public class Button
         set { highlighted = value; }
     }
 
-    public override string ToString()
+    public string ToString(bool highlighted)
     {
-        return this.highlighted ? $"{Bg(Color.White)}{Fg(Color.Black)}{text}{ColorReset()}" : text;
+        return highlighted ? $"{Bg(Color.White)}{Fg(Color.Black)}[{text}]{ColorReset()}" : $"[{text}]";
     }
 }

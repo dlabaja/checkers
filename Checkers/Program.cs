@@ -1,6 +1,6 @@
 ﻿using Checkers;
 
-new Controller().Start();
+Controller.Start();
 
 while (true)
 {
