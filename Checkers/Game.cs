@@ -83,30 +83,34 @@ public class Game
         return true;
     }
 
-    // todo do controlů
-    public void Select()
+    public bool Select()
     {
-        // deselect
-        if (this.selected == this.cursor)
-        {
-            this.selected = null;
-            return;
-        }
-
-        // reselect
         if (this.board.Pieces.TryGetValue(this.cursor, out _))
         {
             this.selected = this.cursor;
-            return;
+            return true;
         }
-        
-        // move
+
+        return false;
+    }
+
+    public void Deselect()
+    {
+        this.selected = null;
+    }
+
+    public bool Move(Position position, out Piece? captured)
+    {
+        captured = null;
         if (this.selected != null)
         {
             this.board.Pieces[this.cursor] = this.board.Pieces[this.selected.Value];
             this.board.Pieces.Remove(this.selected.Value);
             this.selected = null;
+            return true;
         }
+
+        return false;
     }
     
     private Dictionary<Position, Piece> CurrentPieces
