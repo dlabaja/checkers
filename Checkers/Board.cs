@@ -75,11 +75,12 @@ public class Board
 
         if (n == 0 || PositionOutOfBounds(nextPosition))
         {
-            return list.Append((position, null)).ToList();
+            list.Add((position, null));
+            return list;
         }
 
         list.Add((position, null));
-        return GetAllowedPositionsOnDiagonal(n - 1, nextPosition, xOffset, yOffset, opponentPositions, playerPositions, list);
+        return GetAllowedPositionsOnDiagonal(n - 1, nextPosition, yOffset, xOffset, opponentPositions, playerPositions, list);
     }
 
     private List<(Position allowedPosition, Position? captured)> GetPieceAllowedPositionsAndCapturables(Position position, Piece piece)
