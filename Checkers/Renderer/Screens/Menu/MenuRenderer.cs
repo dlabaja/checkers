@@ -20,7 +20,9 @@ public class MenuRenderer: IRenderer
         Console.WriteLine(this.text);
         foreach (var button in menu.Buttons)
         {
-            Console.WriteLine(button.ToString(blinker.CursorIsBlinked && button.Highlighted));
+            Console.WriteLine(button.ToString((blinker.CursorIsBlinked || this.menu.ChangedHighlightedButton) && button.Highlighted));
         }
+
+        this.menu.ChangedHighlightedButton = false;
     }
 }

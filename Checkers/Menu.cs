@@ -6,6 +6,7 @@ public class Menu
 {
     private int head = 0;
     private List<Button> buttons;
+    private bool changedHighlightedButton;
 
     public Menu(List<Button> buttons)
     {
@@ -30,6 +31,7 @@ public class Menu
             this.head = this.buttons.Count - 1;
         }
         this.buttons[head].Highlighted = true;
+        this.changedHighlightedButton = true;
     }
 
     public void HighlightNextButton()
@@ -46,6 +48,7 @@ public class Menu
             this.head = 0;
         }
         this.buttons[head].Highlighted = true;
+        this.changedHighlightedButton = true;
     }
 
     public void SelectButton()
@@ -56,5 +59,11 @@ public class Menu
     public List<Button> Buttons
     {
         get { return buttons; }
+    }
+    
+    public bool ChangedHighlightedButton
+    {
+        get { return changedHighlightedButton; }
+        set { changedHighlightedButton = value; }
     }
 }
