@@ -5,65 +5,54 @@ namespace Checkers;
 public class Menu
 {
     private int head = 0;
-    private List<Button> buttons;
-    private bool changedHighlightedButton;
+    public List<Button> Buttons { get; }
+    public bool ChangedHighlightedButton { get; set; }
 
     public Menu(List<Button> buttons)
     {
-        this.buttons = buttons;
-        if (this.buttons.Count > 0)
+        this.Buttons = buttons;
+        if (this.Buttons.Count > 0)
         {
-            this.buttons[0].Highlighted = true;
+            this.Buttons[0].Highlighted = true;
         }
     }
 
     public void HighlightPrevButton()
     {
-        if (this.buttons.Count == 0)
+        if (this.Buttons.Count == 0)
         {
             return;
         }
         
-        this.buttons[head].Highlighted = false;
+        this.Buttons[head].Highlighted = false;
         this.head--;
         if (head < 0)
         {
-            this.head = this.buttons.Count - 1;
+            this.head = this.Buttons.Count - 1;
         }
-        this.buttons[head].Highlighted = true;
-        this.changedHighlightedButton = true;
+        this.Buttons[head].Highlighted = true;
+        this.ChangedHighlightedButton = true;
     }
 
     public void HighlightNextButton()
     {
-        if (this.buttons.Count == 0)
+        if (this.Buttons.Count == 0)
         {
             return;
         }
         
-        this.buttons[head].Highlighted = false;
+        this.Buttons[head].Highlighted = false;
         this.head++;
-        if (this.head >= this.buttons.Count)
+        if (this.head >= this.Buttons.Count)
         {
             this.head = 0;
         }
-        this.buttons[head].Highlighted = true;
-        this.changedHighlightedButton = true;
+        this.Buttons[head].Highlighted = true;
+        this.ChangedHighlightedButton = true;
     }
 
     public void SelectButton()
     {
-        this.buttons[head].Action();
-    }
-    
-    public List<Button> Buttons
-    {
-        get { return buttons; }
-    }
-    
-    public bool ChangedHighlightedButton
-    {
-        get { return changedHighlightedButton; }
-        set { changedHighlightedButton = value; }
+        this.Buttons[head].Action();
     }
 }

@@ -6,14 +6,14 @@ public class Game
     private readonly Position defaultCursorPosition = new Position(7, 0);
     private Position cursor;
     private Position? selected;
-    private PieceColor currentColor;
-    private Board board;
+    public PieceColor CurrentColor { get; private set; }
+    public Board Board { get; }
 
     public Game()
     {
         this.cursor = defaultCursorPosition;
-        this.currentColor = PieceColor.White;
-        this.board = new Board();
+        this.CurrentColor = PieceColor.White;
+        this.Board = new Board();
     }
     
     private List<Position> GetValidCursorPositions()
@@ -25,7 +25,7 @@ public class Game
 
         if (this.CurrentPieces.TryGetValue(this.selected.Value, out Piece? piece))
         {
-            return this.board.GetPieceAllowedPositions(this.selected.Value, piece);
+            return this.Board.GetPieceAllowedPositions(this.selected.Value, piece);
         }
         
         return CurrentPieces.Keys.ToList();
@@ -33,7 +33,7 @@ public class Game
 
     private void SwitchCurrentColor()
     {
-        this.currentColor = this.currentColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
+        this.CurrentColor = this.CurrentColor == PieceColor.White ? PieceColor.Black : PieceColor.White;
     }
 
     private void ResetCursor()
@@ -102,7 +102,7 @@ public class Game
 
     public bool Select()
     {
-        if (this.board.Pieces.ContainsKey(this.cursor))
+        if (this.Board.Pieces.ContainsKey(this.cursor))
         {
             this.selected = this.cursor;
             return true;
@@ -114,7 +114,7 @@ public class Game
     private bool Move(out Piece? captured)
     {
         captured = null;
-        var pieceWhichHasToCapture = this.board.GetPieceWhichHasToCapture(this.currentColor);
+        var pieceWhichHasToCapture = this.Board.GetPieceWhichHasToCapture(this.CurrentColor);
         if (this.selected == null)
         {
             return false;
@@ -139,7 +139,7 @@ public class Game
         {
             if (IsGameOver())
             {
-                this.OnGameOver?.Invoke(this.currentColor);
+                this.OnGameOver?.Invoke(this.CurrentColor);
                 return true;
             }
             SwitchCurrentColor();
@@ -161,10 +161,5 @@ public class Game
     }
     
     public Position Cursor => cursor;
-
-    public PieceColor CurrentColor => currentColor;
-
-    public Board Board => board;
-
     public Position? Selected => selected;
 }

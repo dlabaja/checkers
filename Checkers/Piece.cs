@@ -14,27 +14,23 @@ public enum PieceColor
 
 public class Piece
 {
-    private PieceType type;
-    private PieceColor color;
+    public PieceType Type { get; private set; }
+    public PieceColor Color { get; }
     
     public Piece(PieceType type, PieceColor color)
     {
-        this.type = type;
-        this.color = color;
+        this.Type = type;
+        this.Color = color;
     }
 
     public bool Evolve()
     {
-        if (this.type == PieceType.Pawn)
+        if (this.Type == PieceType.Pawn)
         {
-            this.type = PieceType.Queen;
+            this.Type = PieceType.Queen;
             return true;
         }
 
         return false;
     }
-    
-    public PieceType Type => type;
-
-    public PieceColor Color => color;
 }
