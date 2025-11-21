@@ -164,6 +164,20 @@ public class Board
         return GetPieceAllowedPositionsAndCapturables(position, piece).Select(x => x.captured).OfType<Position>().ToList();
     }
 
+    public Position? GetPieceWhichHasToCapture(PieceColor color)
+    {
+        var piecesByColor = GetPiecesByColor(color);
+        foreach (var (position, piece) in piecesByColor)
+        {
+            if (GetPieceCapturables(position, piece).Count > 0)
+            {
+                return position;
+            }
+        }
+
+        return null;
+    } 
+
     private Dictionary<Position, Piece> GetPiecesByColor(PieceColor color)
     {
         return color == PieceColor.White ? WhitePieces : BlackPieces;
