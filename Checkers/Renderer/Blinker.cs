@@ -6,8 +6,8 @@ using Timer = System.Timers.Timer;
 public class Blinker
 {
     private readonly Timer blinkTimer;
-    private bool cursorIsBlinked;
-    
+    public bool CursorIsBlinked { get; private set; }
+
     public Blinker()
     {
         blinkTimer = new Timer(600);
@@ -17,12 +17,7 @@ public class Blinker
     
     private void OnBlinkTimerElapsed(object? sender, ElapsedEventArgs e)
     {
-        cursorIsBlinked = !cursorIsBlinked;
-    }
-    
-    public bool CursorIsBlinked
-    {
-        get { return cursorIsBlinked; }
+        CursorIsBlinked = !CursorIsBlinked;
     }
     
     public void Start()

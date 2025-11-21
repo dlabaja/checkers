@@ -1,4 +1,4 @@
-namespace Checkers;
+namespace Checkers.Controls;
 
 public interface IControls
 {

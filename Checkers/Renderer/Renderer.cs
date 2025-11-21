@@ -7,7 +7,7 @@ namespace Checkers.Renderer;
 public class Renderer
 {
     private readonly Timer renderTimer;
-    private IRenderer? currentRenderer;
+    public IRenderer? CurrentRenderer { get; set; }
 
     public Renderer()
     {
@@ -19,7 +19,7 @@ public class Renderer
     private void OnRenderTimerElapsed(object? sender, ElapsedEventArgs e)
     {
         Console.Clear();
-        this.currentRenderer?.Render();
+        this.CurrentRenderer?.Render();
     }
     
     public void Start()
@@ -31,11 +31,5 @@ public class Renderer
     {
         this.renderTimer.Stop();
         this.renderTimer.Dispose();
-    }
-    
-    public IRenderer? CurrentRenderer
-    {
-        get { return this.currentRenderer; }
-        set { this.currentRenderer = value; }
     }
 }

@@ -2,22 +2,22 @@ namespace Checkers.Controls;
 
 public class GameControls : IControls
 {
-    private Dictionary<ConsoleKey, Action> keyActions;
-    private Game game;
+    private readonly Game game;
+    public Dictionary<ConsoleKey, Action> KeyActions { get; }
 
     public GameControls(Game game)
     {
         this.game = game;
-        this.keyActions = new Dictionary<ConsoleKey, Action>
+        this.KeyActions = new Dictionary<ConsoleKey, Action>
         {
-            {ConsoleKey.UpArrow, () => game.MoveCursorUp()},
-            {ConsoleKey.DownArrow, () => game.MoveCursorDown()},
-            {ConsoleKey.RightArrow, () => game.MoveCursorRight()},
-            {ConsoleKey.LeftArrow, () => game.MoveCursorLeft()},
-            {ConsoleKey.W, () => game.MoveCursorUp()},
-            {ConsoleKey.S, () => game.MoveCursorDown()},
-            {ConsoleKey.D, () => game.MoveCursorRight()},
-            {ConsoleKey.A, () => game.MoveCursorLeft()},
+            {ConsoleKey.UpArrow, game.MoveCursorUp},
+            {ConsoleKey.DownArrow, game.MoveCursorDown},
+            {ConsoleKey.RightArrow, game.MoveCursorRight},
+            {ConsoleKey.LeftArrow, game.MoveCursorLeft},
+            {ConsoleKey.W, game.MoveCursorUp},
+            {ConsoleKey.S, game.MoveCursorDown},
+            {ConsoleKey.D, game.MoveCursorRight},
+            {ConsoleKey.A, game.MoveCursorLeft},
             {ConsoleKey.P, () => Controller.RenderDraw(game)},
             {ConsoleKey.Enter, OnEnter}
         };
@@ -42,6 +42,4 @@ public class GameControls : IControls
             this.game.MakeTurn(out Piece? piece);
         }
     }
-
-    public Dictionary<ConsoleKey, Action> KeyActions => this.keyActions;
 }

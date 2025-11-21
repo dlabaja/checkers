@@ -5,34 +5,19 @@ namespace Checkers.Renderer;
 
 public class Button
 {
-    private string text;
-    private bool highlighted;
-    private Action action;
+    public string Text { get; }
+    public Action Action { get; }
+    public bool Highlighted { get; set; }
 
     public Button(string text, Action action)
     {
-        this.text = text;
-        this.action = action;
-    }
-
-    public bool Highlighted
-    {
-        get { return highlighted; }
-        set { highlighted = value; }
+        this.Text = text;
+        this.Action = action;
     }
 
     public string ToString(bool highlighted)
     {
         var color = highlighted ? $"{Bg(Color.White)}{Fg(Color.Black)}" : $"{Bg(Color.Dark_Gray)}{Fg(Color.Black)}";
-        return $"{color}[{text}]{ColorReset()}";
-    }
-    
-    public string Text
-    {
-        get { return text; }
-    }
-    public Action Action
-    {
-        get { return action; }
+        return $"{color}[{Text}]{ColorReset()}";
     }
 }

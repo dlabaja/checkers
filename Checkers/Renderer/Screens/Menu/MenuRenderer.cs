@@ -4,9 +4,9 @@ namespace Checkers.Renderer.Screens.Menu;
 
 public class MenuRenderer: IRenderer
 {
-    private Checkers.Menu menu;
-    private Blinker blinker;
-    private string text;
+    private readonly Checkers.Menu menu;
+    private readonly Blinker blinker;
+    private readonly string text;
 
     public MenuRenderer(Checkers.Menu menu, string text, Blinker blinker)
     {

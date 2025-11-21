@@ -7,9 +7,9 @@ namespace Checkers;
 
 public static class Controller
 {
-    private static Renderer.Renderer renderer = new Renderer.Renderer();
-    private static Controls.Controls controls = new Controls.Controls();
-    private static Blinker blinker = new Blinker();
+    private static readonly Renderer.Renderer renderer = new Renderer.Renderer();
+    private static readonly Controls.Controls controls = new Controls.Controls();
+    private static readonly Blinker blinker = new Blinker();
 
     public static void Start()
     {

@@ -2,13 +2,13 @@ namespace Checkers.Controls;
 
 public class MenuControls: IControls
 {
-    private Dictionary<ConsoleKey, Action> keyActions;
     private Menu menu;
+    public Dictionary<ConsoleKey, Action> KeyActions { get; }
 
     public MenuControls(Menu menu)
     {
         this.menu = menu;
-        this.keyActions = new Dictionary<ConsoleKey, Action>
+        this.KeyActions = new Dictionary<ConsoleKey, Action>
         {
             {ConsoleKey.UpArrow, menu.HighlightPrevButton},
             {ConsoleKey.DownArrow, menu.HighlightNextButton},
@@ -17,6 +17,4 @@ public class MenuControls: IControls
             {ConsoleKey.Enter, menu.SelectButton}
         };
     }
-
-    public Dictionary<ConsoleKey, Action> KeyActions => this.keyActions;
 }

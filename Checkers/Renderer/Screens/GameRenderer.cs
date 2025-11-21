@@ -7,8 +7,8 @@ namespace Checkers.Renderer.Screens;
 
 public class GameRenderer : IRenderer
 {
-    private Game game;
-    private Blinker blinker;
+    private readonly Game game;
+    private readonly Blinker blinker;
 
     public GameRenderer(Game game, Blinker blinker)
     {

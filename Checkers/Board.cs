@@ -9,9 +9,9 @@ public record struct Position(int y, int x)
 public class Board
 {
     public const byte BoardSize = 8;
-    public Action? OnCapture; 
-    private Position? latestDeath;
-    private Dictionary<Position, Piece> pieces = new Dictionary<Position, Piece>();
+    public Action? OnCapture;
+    public Dictionary<Position, Piece> Pieces { get; } = new Dictionary<Position, Piece>();
+    public Position? LatestDeath { get; private set; }
 
     public Board()
     {
@@ -24,7 +24,7 @@ public class Board
         {
             if ((x + offset) % 2 == 0)
             {
-                pieces.Add(new Position(rowIndex, x), new Piece(PieceType.Pawn, color));
+                Pieces.Add(new Position(rowIndex, x), new Piece(PieceType.Pawn, color));
             }
         }
     }
@@ -105,20 +105,20 @@ public class Board
 
     public void CapturePiece(Position position)
     {
-        this.pieces.Remove(position);
+        this.Pieces.Remove(position);
         this.OnCapture?.Invoke();
-        this.latestDeath = position;
+        this.LatestDeath = position;
     }
 
     public bool Move(Position start, Position end, out Piece? captured)
     {
         captured = null;
-        if (!this.pieces.ContainsKey(start))
+        if (!this.Pieces.ContainsKey(start))
         {
             return false;
         }
 
-        var allowedPositionsAndCaptures = this.GetPieceAllowedPositionsAndCapturables(start, this.pieces[start]);
+        var allowedPositionsAndCaptures = this.GetPieceAllowedPositionsAndCapturables(start, this.Pieces[start]);
         var allowedPositions = allowedPositionsAndCaptures.Select(x => x.allowedPosition).ToList();
         if (!allowedPositions.Contains(end))
         {
@@ -128,16 +128,16 @@ public class Board
         var capturedPosition = allowedPositionsAndCaptures.Find(x => x.allowedPosition == end).captured;
         if (capturedPosition != null)
         {
-            captured = this.pieces[capturedPosition.Value];
+            captured = this.Pieces[capturedPosition.Value];
             CapturePiece(capturedPosition.Value);
         }
 
-        this.pieces[end] = this.pieces[start];
-        this.pieces.Remove(start);
+        this.Pieces[end] = this.Pieces[start];
+        this.Pieces.Remove(start);
 
-        if (CanEvolve(end, this.pieces[end]))
+        if (CanEvolve(end, this.Pieces[end]))
         {
-            this.pieces[end].Evolve();
+            this.Pieces[end].Evolve();
         }
 
         return true;
@@ -146,7 +146,7 @@ public class Board
     public Piece?[,] GetBoard()
     {
         var board = new Piece?[8, 8];
-        foreach (var (pos, piece) in pieces)
+        foreach (var (pos, piece) in Pieces)
         {
             board[pos.y, pos.x] = piece;
         }
@@ -158,7 +158,7 @@ public class Board
     {
         return GetPieceAllowedPositionsAndCapturables(position, piece).Select(x => x.allowedPosition).ToList();
     }
-    
+
     public List<Position> GetPieceCapturables(Position position, Piece piece)
     {
         return GetPieceAllowedPositionsAndCapturables(position, piece).Select(x => x.captured).OfType<Position>().ToList();
@@ -185,18 +185,11 @@ public class Board
 
     public Dictionary<Position, Piece> WhitePieces
     {
-        get => this.pieces.Where(x => x.Value.Color == PieceColor.White).ToDictionary();
+        get => this.Pieces.Where(x => x.Value.Color == PieceColor.White).ToDictionary();
     }
 
     public Dictionary<Position, Piece> BlackPieces
     {
-        get => this.pieces.Where(x => x.Value.Color == PieceColor.Black).ToDictionary();
+        get => this.Pieces.Where(x => x.Value.Color == PieceColor.Black).ToDictionary();
     }
-
-    public Dictionary<Position, Piece> Pieces
-    {
-        get { return pieces; }
-    }
-    
-    public Position? LatestDeath => latestDeath;
 }

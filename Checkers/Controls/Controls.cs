@@ -3,8 +3,8 @@ namespace Checkers.Controls;
 public class Controls
 {
     private Thread thread;
-    private IControls? currentControls;
     private readonly CancellationTokenSource cts = new CancellationTokenSource();
+    public IControls? CurrentControls { get; set; }
 
     public void Start()
     {
@@ -22,16 +22,10 @@ public class Controls
         while (!token.IsCancellationRequested)
         {
             var key = Console.ReadKey().Key;
-            if (currentControls != null && currentControls.KeyActions.TryGetValue(key, out Action? value))
+            if (CurrentControls != null && CurrentControls.KeyActions.TryGetValue(key, out Action? value))
             {
                 value();
             }
         }
-    }
-    
-    public IControls? CurrentControls
-    {
-        get { return currentControls; }
-        set { currentControls = value; }
     }
 }

@@ -4,28 +4,28 @@ public class Game
 {
     public event Action<PieceColor>? OnGameOver;
     private readonly Position defaultCursorPosition = new Position(7, 0);
-    private Position cursor;
-    private Position? selected;
     public PieceColor CurrentColor { get; private set; }
     public Board Board { get; }
+    public Position Cursor { get; private set; }
+    public Position? Selected { get; private set; }
 
     public Game()
     {
-        this.cursor = defaultCursorPosition;
+        this.Cursor = defaultCursorPosition;
         this.CurrentColor = PieceColor.White;
         this.Board = new Board();
     }
     
     private List<Position> GetValidCursorPositions()
     {
-        if (selected == null)
+        if (!Selected.HasValue)
         {
             return CurrentPieces.Keys.ToList();
         }
 
-        if (this.CurrentPieces.TryGetValue(this.selected.Value, out Piece? piece))
+        if (this.CurrentPieces.TryGetValue(this.Selected.Value, out Piece? piece))
         {
-            return this.Board.GetPieceAllowedPositions(this.selected.Value, piece);
+            return this.Board.GetPieceAllowedPositions(this.Selected.Value, piece);
         }
         
         return CurrentPieces.Keys.ToList();
@@ -38,7 +38,7 @@ public class Game
 
     private void ResetCursor()
     {
-        this.cursor = this.CurrentPieces.First().Key;
+        this.Cursor = this.CurrentPieces.First().Key;
     }
 
     private bool IsGameOver()
@@ -46,83 +46,76 @@ public class Game
         return this.Board.WhitePieces.Count == 0 || this.Board.BlackPieces.Count == 0;
     }
     
-    public bool MoveCursorRight()
+    public void MoveCursorRight()
     {
-        var positions = GetValidCursorPositions().Where(pos => pos.y == this.cursor.y && pos.x > this.cursor.x).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y == this.Cursor.y && pos.x > this.Cursor.x).ToList();
         if (positions.Count == 0)
         {
-            return false;
+            return;
         }
 
-        this.cursor = positions.OrderBy(pos => pos.x).First();
-        return true;
+        this.Cursor = positions.OrderBy(pos => pos.x).First();
     }
     
-    public bool MoveCursorLeft()
+    public void MoveCursorLeft()
     {
-        var positions = GetValidCursorPositions().Where(pos => pos.y == this.cursor.y && pos.x < this.cursor.x).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y == this.Cursor.y && pos.x < this.Cursor.x).ToList();
         if (positions.Count == 0)
         {
-            return false;
+            return;
         }
 
-        this.cursor = positions.OrderBy(pos => pos.x).Last();
-        return true;
+        this.Cursor = positions.OrderBy(pos => pos.x).Last();
     }
 
-    public bool MoveCursorUp()
+    public void MoveCursorUp()
     {
-        var positions = GetValidCursorPositions().Where(pos => pos.y < this.cursor.y).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y < this.Cursor.y).ToList();
         if (positions.Count == 0)
         {
-            return false;
+            return;
         }
 
         var sorted = positions.OrderBy(pos => pos.y).ToList();
         var y = sorted.Last().y;
         var lowestRow = sorted.Where(pos => pos.y == y).Select(pos => pos.x).ToList();
-        this.cursor = new Position(y, Utils.FindClosestToX(this.cursor.x, lowestRow));
-        return true;
+        this.Cursor = new Position(y, Utils.FindClosestToX(this.Cursor.x, lowestRow));
     }
 
-    public bool MoveCursorDown()
+    public void MoveCursorDown()
     {
-        var positions = GetValidCursorPositions().Where(pos => pos.y > this.cursor.y).ToList();
+        var positions = GetValidCursorPositions().Where(pos => pos.y > this.Cursor.y).ToList();
         if (positions.Count == 0)
         {
-            return false;
+            return;
         }
 
         var sorted = positions.OrderBy(pos => pos.y).ToList();
         var y = sorted.First().y;
         var lowestRow = sorted.Where(pos => pos.y == y).Select(pos => pos.x).ToList();
-        this.cursor = new Position(y, Utils.FindClosestToX(this.cursor.x, lowestRow, false));
-        return true;
+        this.Cursor = new Position(y, Utils.FindClosestToX(this.Cursor.x, lowestRow, false));
     }
 
-    public bool Select()
+    public void Select()
     {
-        if (this.Board.Pieces.ContainsKey(this.cursor))
+        if (this.Board.Pieces.ContainsKey(this.Cursor))
         {
-            this.selected = this.cursor;
-            return true;
+            this.Selected = this.Cursor;
         }
-
-        return false;
     }
 
     private bool Move(out Piece? captured)
     {
         captured = null;
         var pieceWhichHasToCapture = this.Board.GetPieceWhichHasToCapture(this.CurrentColor);
-        if (this.selected == null)
+        if (this.Selected == null)
         {
             return false;
         }
         
-        if (this.Board.Move(this.selected.Value, this.cursor, out captured))
+        if (this.Board.Move(this.Selected.Value, this.Cursor, out captured))
         {
-            this.selected = null;
+            this.Selected = null;
         }
         
         if (captured == null && pieceWhichHasToCapture.HasValue)
@@ -133,33 +126,28 @@ public class Game
         return true;
     }
     
-    public bool MakeTurn(out Piece? captured)
+    public void MakeTurn(out Piece? captured)
     {
         if (Move(out captured))
         {
             if (IsGameOver())
             {
                 this.OnGameOver?.Invoke(this.CurrentColor);
-                return true;
+                return;
             }
             SwitchCurrentColor();
             this.ResetCursor();
-            return true;
         }
 
-        return false;
     }
 
     public void Deselect()
     {
-        this.selected = null;
+        this.Selected = null;
     }
     
     private Dictionary<Position, Piece> CurrentPieces
     {
         get => this.CurrentColor == PieceColor.White ? this.Board.WhitePieces : this.Board.BlackPieces;
     }
-    
-    public Position Cursor => cursor;
-    public Position? Selected => selected;
 }
